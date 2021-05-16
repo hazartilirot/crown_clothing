@@ -28,7 +28,7 @@ class App extends Component {
         
       const userRef = await createUserProfileDocument(userAuth);
       
-      const unsubscribe = userRef.onSnapshot(snapShot => {
+      userRef.onSnapshot(snapShot => {
         this.setState({
           currentUser: {
             id: snapShot.id,
@@ -37,7 +37,6 @@ class App extends Component {
         });
 
       });
-      unsubscribe();
     });
   }
 
