@@ -11,6 +11,7 @@ import SignInAndSignOut from "./components/sign-in-and-sign-out/sign-in-and-sign
 import { auth, createUserProfileDocument } from "./firebase/firebase.utils";
 
 import { setCurrentUser } from "./redux/user/user.actions";
+import { Redirect } from "react-router-dom";
 
 class App extends Component {
 
@@ -48,7 +49,13 @@ class App extends Component {
         <Switch>
           <Route exact path="/" component={HomePage} />
           <Route path="/shop" component={ShopPage} />
-          <Route path="/signin" component={SignInAndSignOut} />
+          <Route 
+            exact path="/signin" 
+            render={() => this.props.currentUser 
+              ? <Redirect to="/" /> 
+              : <SignInAndSignOut />
+            } 
+          />
         </Switch>
       </div>
     );
@@ -56,9 +63,13 @@ class App extends Component {
 }
 /*The thing to remember is that we cannot use our Action Creator 
 setCurrentUser(user) we firstly need to dispatch it to props and only then by
-calling it this.props.setCurrentUser() we can pass in our user*/
+calling it this.props.setCurrentUser() can we pass in our user*/
 const mapDispatchToProps = dispatch => ({
   setCurrentUser: user => dispatch(setCurrentUser(user))
 })
 
-export default connect(null, mapDispatchToProps)(App);
+const mapStateToProps = ({user}) => ({
+  currentUser: user.currentUser
+})
+
+export default connect(mapStateToProps, mapDispatchToProps)(App);
