@@ -18,7 +18,6 @@ import { Redirect } from "react-router-dom";
 import {selectCurrentUser} from "./redux/user/user.selector";
 import {createStructuredSelector} from "reselect";
 
-
 class App extends Component {
 
   unsubscribeFromAuth = null;
