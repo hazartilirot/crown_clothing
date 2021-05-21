@@ -18,12 +18,15 @@ import { Redirect } from "react-router-dom";
 import {selectCurrentUser} from "./redux/user/user.selector";
 import {createStructuredSelector} from "reselect";
 
+import {addCollectionAndDocuments} from "./firebase/firebase.utils";
+import {selectCollectionsForPreview} from './redux/shop/shop.selectors'
+
 class App extends Component {
 
   unsubscribeFromAuth = null;
 
   componentDidMount() {
-    const {setCurrentUser} = this.props;
+    const {setCurrentUser, collectionsArray} = this.props;
     
     this.unsubscribeFromAuth = auth.onAuthStateChanged(async userAuth => {
       
@@ -41,6 +44,13 @@ class App extends Component {
         })
       });
     });
+/*The object is destructured to omit unnecessary properties like id and
+ routeName. The unique id would be created by Firebase once data is imported*/
+    
+    addCollectionAndDocuments(
+        'collections', 
+        collectionsArray.map(({title, items}) => ({title, items}))
+    );
   }
 
   componentWillUnmount() {
@@ -75,7 +85,8 @@ const mapDispatchToProps = dispatch => ({
 })
 
 const mapStateToProps = createStructuredSelector({
-  currentUser: selectCurrentUser
+  currentUser: selectCurrentUser,
+  collectionsArray: selectCollectionsForPreview
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(App);
